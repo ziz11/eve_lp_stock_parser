@@ -81,6 +81,31 @@ import re
 for col in ('ISK','ItemCount','LP','Margin_LP','SellPrice','Spendings'):
     df[col] = df[col].astype('str').apply(lambda x:float(re.sub(u'[^0-9-.]', '', x.encode('utf-8'))))
 
+dft=df[df['group_']=='control']
+dfc=df[df['group_']=='test']
+
+col_name = 'sh'
+
+print(dft[col_name].mean())
+print(dfc[col_name].mean())
+
+t=(dfc[col_name].mean()-dft[col_name].mean())/np.sqrt(dfc[col_name].var()/dfc[col_name].shape[0]+dft[col_name].var()/dft[col_name].shape[0])
+
+dft.loc[:,'upd_']=dft[col_name]-dft[col_name].mean()+df[col_name].mean()
+dfc.loc[:,'upd_']=dfc[col_name]-dfc[col_name].mean()+df[col_name].mean()
+
+#dft.loc[:,'upd_']=dft[col_name]
+#dfc.loc[:,'upd_']=dfc[col_name]
+
+fin=[]
+for i in range(10000):
+    t1=np.random.choice(dft['upd_'],dft['upd_'].shape[0])
+    c1=np.random.choice(dfc['upd_'],dfc['upd_'].shape[0])
+    tt=(c1.mean()-t1.mean())/np.sqrt(c1.var()/c1.shape[0]+t1.var()/t1.shape[0])
+    fin.append(tt)
+
+1.0000*sum(fin>t)/10000
+
 # print(df.info())
 
 # for obj in df.Fraction.unique():
@@ -89,7 +114,7 @@ for col in ('ISK','ItemCount','LP','Margin_LP','SellPrice','Spendings'):
 # df[df.Name == 'Caldari Navy Ballistic Control System Blueprint']
 
 import sys
-if sys.version_info[0] < 3: 
+if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
     from io import StringIO
@@ -143,3 +168,28 @@ df_2 = df_2.sort_values(['Fraction','Name']).drop_duplicates(subset=['Name']).re
 # df_2[df_2.type != 'Outsiders'].head(30).astype('str')
 
 df_2[df_2.Name == "Inherent Implants 'Highwall' Mining MX-1005"]
+
+dft=df[(df['group_']=='control') & (df['city']=='Санкт-Петербург')]
+dfc=df[(df['group_']=='test') & (df['city']=='Санкт-Петербург')]
+
+col_name = 'sh'
+
+print(dft[col_name].mean())
+print(dfc[col_name].mean())
+
+t=(dfc[col_name].mean()-dft[col_name].mean())/np.sqrt(dfc[col_name].var()/dfc[col_name].shape[0]+dft[col_name].var()/dft[col_name].shape[0])
+
+dft.loc[:,'upd_']=dft[col_name]-dft[col_name].mean()+df[col_name].mean()
+dfc.loc[:,'upd_']=dfc[col_name]-dfc[col_name].mean()+df[col_name].mean()
+
+#dft.loc[:,'upd_']=dft[col_name]
+#dfc.loc[:,'upd_']=dfc[col_name]
+
+fin=[]
+for i in range(10000):
+    t1=np.random.choice(dft['upd_'],dft['upd_'].shape[0])
+    c1=np.random.choice(dfc['upd_'],dfc['upd_'].shape[0])
+    tt=(c1.mean()-t1.mean())/np.sqrt(c1.var()/c1.shape[0]+t1.var()/t1.shape[0])
+    fin.append(tt)
+
+1.0000*sum(fin>t)/10000
